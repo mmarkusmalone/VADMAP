@@ -1,0 +1,15 @@
+#title {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+  display:block;
+  color: white;
+  font-family: "neue-haas-grotesk-display", sans-serif;
+  letter-spacing: 1.5px;
+  font-size: 15px;
+}
+
+/* Use CSS2DRenderer or CSS3DRenderer */
+/* Use these renderers to draw high-quality text contained in DOM elements to your three.js scene. This is similar to 1. except that with these renderers elements can be integrated more tightly and dynamically into the scene. */

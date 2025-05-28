@@ -192,8 +192,7 @@ def caller(journal):
     map = preProcessEntry(journal)
     #populate the map with the VAD scores
     popMap = processEntry(map)
-    return popMap
-
+    return popMap 
 
 if __name__ == "__main__":
     journal = []
