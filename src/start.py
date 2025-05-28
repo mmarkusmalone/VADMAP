@@ -98,95 +98,6 @@ def vadTransformer(model_outputs):
         weighted_vad = [0.0, 0.0, 0.0]
     return [weighted_vad[0], weighted_vad[1], weighted_vad[2]]
 
-def visualize_with_plotly(data_map):
-    plot_data_list = []
-    for date, entries in data_map.items():
-        for sentence_chunk, vad_scores in entries.items():
-            if isinstance(vad_scores, list) and len(vad_scores) == 3:
-                plot_data_list.append({
-                    'text_chunk': sentence_chunk,
-                    'V': vad_scores[0],
-                    'A': vad_scores[1],
-                    'D': vad_scores[2],
-                    'date': date
-                })
-
-    if not plot_data_list:
-        print("No valid data for Plotly visualization.")
-        return
-    
-    df = pd.DataFrame(plot_data_list)
-
-    fig = px.scatter_3d(df, x='V', y='A', z='D',
-                        color='date',  # Optional: color points by date
-                        hover_name='text_chunk', # Show the text chunk on hover
-                        title='Interactive 3D VAD Score Visualization')
-
-    # Ensure axes are labeled correctly and ranges are set
-    fig.update_layout(
-        scene=dict(
-            xaxis_title='Valence',
-            yaxis_title='Arousal',
-            zaxis_title='Dominance',
-            xaxis=dict(range=[-1,1]),
-            yaxis=dict(range=[-1,1]),
-            zaxis=dict(range=[-1,1])
-        )
-    )
-    fig.show()
-
-# def visualize(data_map):
-#     """
-#     Visualizes the VAD (Valence, Arousal, Dominance) scores on a 3D scatter plot.
-
-#     Args:
-#         data_map (dict): A dictionary where keys are dates (str) and values are
-#                          dictionaries. These inner dictionaries have sentences/chunks (str)
-#                          as keys and 3D VAD score lists ([V, A, D]) as values.
-#                          Example: {'2025-10-31': {'Sentence1': [v1,a1,d1], ...}}
-#     """
-#     fig = plt.figure(figsize=(12, 10))
-#     ax = fig.add_subplot(111, projection='3d')
-
-#     all_v = []
-#     all_a = []
-#     all_d = []
-#     # Sentences/chunks could be collected here for advanced annotations or hover effects
-#     # with other libraries, but for a basic matplotlib plot, we'll keep it simple.
-
-#     for date, entries in data_map.items():
-#         for chunk, vad_scores in entries.items():
-#             if isinstance(vad_scores, list) and len(vad_scores) == 3:
-#                 all_v.append(vad_scores[0])
-#                 all_a.append(vad_scores[1])
-#                 all_d.append(vad_scores[2])
-#             else:
-#                 print(f"Warning: Skipping invalid VAD scores for chunk on {date}: {vad_scores}")
-
-#     if not all_v: # No data to plot
-#         print("No valid VAD data to visualize.")
-#         ax.set_title('No VAD Data to Display')
-#         plt.show()
-#         return 0 # Indicate no plot was generated or data was missing
-
-#     # Create the 3D scatter plot
-#     ax.scatter(all_v, all_a, all_d, c='skyblue', s=60, edgecolors='k', alpha=0.7)
-
-#     ax.set_xlabel('Valence (V)')
-#     ax.set_ylabel('Arousal (A)')
-#     ax.set_zlabel('Dominance (D)')
-#     ax.set_title('3D Visualization of VAD Scores for Journal Chunks')
-
-#     # VAD scores are typically in the range [-1, 1]
-#     ax.set_xlim([-1, 1])
-#     ax.set_ylim([-1, 1])
-#     ax.set_zlim([-1, 1])
-
-#     plt.tight_layout() # Adjust layout to make sure everything fits without overlapping
-#     plt.show()
-#     return 1 # Indicate success
-
-
 def caller(journal):
     #map the json journal to a dictionary key:date, value: {chunk: []}
     map = preProcessEntry(journal)
@@ -209,4 +120,4 @@ if __name__ == "__main__":
     #     print(f"First date '{first_date_key}' has {num_chunks_first_date} text chunks.")
     # visualize(vadEX)
 
-    visualize_with_plotly(vadEX)
+    print(vadEX)
