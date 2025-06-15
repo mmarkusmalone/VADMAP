@@ -5,7 +5,7 @@ import time
 access_token = ""
 headers = {
     "Authorization": f"bearer {access_token}",
-    "User-Agent": "ChangeMeClient/0.1 by pizzaluvr23"
+    "User-Agent": "ChangeMeClient/0.1"
 }
 
 url = "https://oauth.reddit.com/r/diaryofaredditor/new"

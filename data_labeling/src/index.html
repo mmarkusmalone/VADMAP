@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VAD Labeling App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; }
+    #root { max-width: 700px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+    .vad-slider { margin: 1em 0; }
+    .vad-label { display: inline-block; width: 90px; }
+    .row-nav { margin: 1em 0; }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <h2>VAD Labeling App</h2>
+    <div id="labelingUI" style="display:none;">
+      <div id="rowInfo"></div>
+      <div id="rowText" style="white-space:pre-wrap; margin:1em 0;"></div>
+      <div class="vad-slider">
+        <span class="vad-label">Valence:</span>
+        <input type="range" id="valence" min="-1" max="1" step="0.01" value="0" />
+        <span id="valenceValue">0.00</span>
+        <div>
+            <img src="components/img/valence.png" alt="Valence" style="max-width:300px; margin-top:8px;">
+        </div>
+      </div>
+      <div class="vad-slider">
+        <span class="vad-label">Arousal:</span>
+        <input type="range" id="arousal" min="-1" max="1" step="0.01" value="0" />
+        <span id="arousalValue">0.00</span>
+        <div>
+            <img src="components/img/arousal.png" alt="Arousal" style="max-width:300px; margin-top:8px;">
+        </div>
+      </div>
+      <div class="vad-slider">
+        <span class="vad-label">Dominance:</span>
+        <input type="range" id="dominance" min="-1" max="1" step="0.01" value="0" />
+        <span id="dominanceValue">0.00</span>
+        <div>
+            <img src="components/img/dominance.png" alt="Dominance" style="max-width:300px; margin-top:8px;">
+        </div>
+      </div>
+    </div>
+    <button id="downloadBtn">Download CSV</button>
+  </div>
+  <script>
+    let csvData = [];
+    let currentRow = 546;
+    let labeledData = [];
+
+    fetch("components/data/reddit_posts_vad.csv")
+    .then(res => res.text())
+    .then(text => {
+        csvData = parseCSV(text);
+        document.getElementById("labelingUI").style.display = "";
+        updateUI();
+    });
+
+
+    function parseCSV(text) {
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      const header = lines[0].split(",");
+      return lines.slice(1).map(line => {
+        // Handles commas inside quotes
+        const values = [];
+        let inQuotes = false, value = '';
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') inQuotes = !inQuotes;
+          else if (char === ',' && !inQuotes) {
+            values.push(value);
+            value = '';
+          } else {
+            value += char;
+          }
+        }
+        values.push(value);
+        const obj = {};
+        header.forEach((h, i) => obj[h.trim()] = values[i] ? values[i].trim() : "");
+        return obj;
+      });
+    }
+    function updateUI() {
+      if (!csvData.length) return;
+      const row = csvData[currentRow];
+      document.getElementById("rowInfo").textContent = `Row ${currentRow + 1} / ${csvData.length}`;
+      document.getElementById("rowText").textContent = row.Post || row.post || JSON.stringify(row);
+      const vad = parseVAD(row.VAD);
+      document.getElementById("valence").value = vad[0];
+      document.getElementById("arousal").value = vad[1];
+      document.getElementById("dominance").value = vad[2];
+      document.getElementById("valenceValue").textContent = vad[0];
+      document.getElementById("arousalValue").textContent = vad[1];
+      document.getElementById("dominanceValue").textContent = vad[2];
+    }
+
+    function parseVAD(vadStr) {
+        try {
+            return JSON.parse(vadStr);
+        } catch {
+            return [0, 0, 0];
+        }
+    }
+
+    ["valence", "arousal", "dominance"].forEach(id => {
+      document.getElementById(id).addEventListener("input", function(e) {
+        document.getElementById(id + "Value").textContent = e.target.value;
+      });
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            if (!csvData.length) return;
+            // Save current row's label
+            const row = csvData[currentRow];
+            const valence = document.getElementById("valence").value;
+            const arousal = document.getElementById("arousal").value;
+            const dominance = document.getElementById("dominance").value;
+            labeledData.push({
+            Post: row.Post || row.post || "",
+            VAD: `${valence},${arousal},${dominance}`
+            });
+            // Move to next row
+            if (currentRow < csvData.length - 1) {
+            currentRow++;
+            updateUI();
+            }
+        } else if (e.key === "ArrowLeft") {
+            // Just move to previous row, do not save
+            if (currentRow < csvData.length - 1) {
+            currentRow++;
+            updateUI();
+            }
+        }
+    });
+
+    document.getElementById("downloadBtn").onclick = function() {
+        // Fetch the existing vad_data.csv
+        fetch("components/data/vad_data.csv")
+            .then(res => res.text())
+            .then(existingText => {
+            let csv = existingText.trim();
+            // If the file is empty, add header
+            if (!csv) {
+                csv = "Post,VAD";
+            }
+            // Prepare new rows
+            labeledData.forEach(row => {
+                // Escape quotes and commas in text
+                const safePost = `"${(row.Post || "").replace(/"/g, '""')}"`;
+                csv += `\n${safePost},${row.VAD}`;
+            });
+            // Download the combined CSV
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "vad_data.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+            })
+            .catch(() => {
+            // If vad_data.csv does not exist, just download labeledData
+            let csv = "Post,VAD";
+            labeledData.forEach(row => {
+                const safePost = `"${(row.Post || "").replace(/"/g, '""')}"`;
+                csv += `\n${safePost},${row.VAD}`;
+            });
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "vad_data_new.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    };
+  </script>
+</body>
+</html>
