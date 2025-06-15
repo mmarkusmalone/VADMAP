@@ -47,7 +47,7 @@
   </div>
   <script>
     let csvData = [];
-    let currentRow = 546;
+    let currentRow = 925;
     let labeledData = [];
 
     fetch("components/data/reddit_posts_vad.csv")
@@ -144,7 +144,7 @@
             let csv = existingText.trim();
             // If the file is empty, add header
             if (!csv) {
-                csv = "Post,VAD";
+                csv = "Post,V,A,D";
             }
             // Prepare new rows
             labeledData.forEach(row => {
@@ -163,7 +163,7 @@
             })
             .catch(() => {
             // If vad_data.csv does not exist, just download labeledData
-            let csv = "Post,VAD";
+            let csv = "Post,V,A,D";
             labeledData.forEach(row => {
                 const safePost = `"${(row.Post || "").replace(/"/g, '""')}"`;
                 csv += `\n${safePost},${row.VAD}`;
