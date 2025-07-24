@@ -11,5 +11,161 @@
   font-size: 15px;
 }
 
+/* Using the font from your Typekit */
+body, button, textarea {
+    font-family: "sofia-pro", sans-serif;
+}
+
+/* Top-left control buttons container */
+#top-left-controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Shared style for control buttons */
+.control-button {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    color: white;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: "neue-haas-grotesk-display", sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-align: center;
+}
+
+.control-button:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #111;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 25px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* The Close Button */
+.close-button {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
 /* Use CSS2DRenderer or CSS3DRenderer */
 /* Use these renderers to draw high-quality text contained in DOM elements to your three.js scene. This is similar to 1. except that with these renderers elements can be integrated more tightly and dynamically into the scene. */
+
+
+
+/* Journal Entry Modal */
+#entry-modal {
+  display: none;
+  position: fixed; /* Fixed to stay in place even on scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  z-index: 200; /* Higher than other UI elements */
+  justify-content: center;
+  align-items: center;
+}
+
+#journal-modal.hidden {
+    display: none;
+}
+
+#modal-content {
+  background-color: #fefefe;
+  padding: 20px 40px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+  color: #333;
+  font-family: sans-serif;
+  max-height: 80vh; /* Max height */
+  overflow-y: auto; /* Scroll if content is too long */
+  box-sizing: border-box;
+}
+
+#modal-close-button {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#modal-close-button:hover,
+#modal-close-button:focus {
+  color: black;
+  text-decoration: none;
+}
+
+#modal-date {
+    margin-top: 0;
+    font-family: "neue-haas-grotesk-display", sans-serif;
+}
+
+#modal-text {
+    white-space: pre-wrap; /* Preserves whitespace and newlines */
+    line-height: 1.6;
+}
+
+#journal-entry-modal .modal-content {
+  background-color: #fefefe;
+  padding: 20px 40px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+  color: #333;
+  font-family: sans-serif;
+  max-height: 80vh;
+  overflow-y: auto; /* enables scrolling for the entire modal if needed */
+  box-sizing: border-box;
+}
+
+#modal-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  max-height: 50vh;          /* constrain the text block */
+  overflow-y: auto;          /* enable scrolling if text exceeds height */
+  padding-right: 4px;        /* to prevent text from hiding behind scrollbar */
+}

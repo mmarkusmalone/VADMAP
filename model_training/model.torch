@@ -1,0 +1,129 @@
+import torch
+from transformers import RobertaForSequenceClassification, RobertaTokenizer
+from torch.utils.data import DataLoader, Dataset
+from torch.optim import AdamW
+from transformers import get_linear_schedule_with_warmup
+from sklearn.model_selection import train_test_split
+import pandas as pd
+from tqdm import tqdm
+
+# Define your dataset class
+class VADDataset(Dataset):
+    def __init__(self, texts, labels_v, labels_a, labels_d, tokenizer, max_len):
+        self.texts = texts
+        self.labels_v = labels_v
+        self.labels_a = labels_a
+        self.labels_d = labels_d
+        self.tokenizer = tokenizer
+        self.max_len = max_len
+
+    def __len__(self):
+        return len(self.texts)
+
+    def __getitem__(self, item):
+        text = str(self.texts[item])
+        label_v = self.labels_v[item]
+        label_a = self.labels_a[item]
+        label_d = self.labels_d[item]
+
+        encoding = self.tokenizer.encode_plus(
+            text,
+            add_special_tokens=True,
+            max_length=self.max_len,
+            return_token_type_ids=False,
+            pad_to_max_length=True,
+            return_attention_mask=True,
+            return_tensors='pt',
+            truncation=True
+        )
+
+        return {
+            'text': text,
+            'input_ids': encoding['input_ids'].flatten(),
+            'attention_mask': encoding['attention_mask'].flatten(),
+            'labels_v': torch.tensor(label_v, dtype=torch.float),
+            'labels_a': torch.tensor(label_a, dtype=torch.float),
+            'labels_d': torch.tensor(label_d, dtype=torch.float)
+        }
+
+# Configuration
+class Config:
+    MAX_LEN = 512
+    TRAIN_BATCH_SIZE = 16
+    VALID_BATCH_SIZE = 16
+    EPOCHS = 5
+    LEARNING_RATE = 2e-5
+    ADAM_EPSILON = 1e-8
+    TOKENIZER_NAME = 'roberta-base'
+    MODEL_NAME = 'roberta-base'
+    DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+config = Config()
+
+class RobertaForVAD(torch.nn.Module):
+    def __init__(self, model_name):
+        super().__init__()
+        from transformers import RobertaModel
+        self.roberta = RobertaModel.from_pretrained(model_name)
+        self.dropout = torch.nn.Dropout(0.1)
+        self.regressor = torch.nn.Linear(self.roberta.config.hidden_size, 3)  # 3 for V, A, D
+
+    def forward(self, input_ids, attention_mask):
+        outputs = self.roberta(input_ids=input_ids, attention_mask=attention_mask)
+        pooled = outputs.pooler_output if hasattr(outputs, "pooler_output") else outputs.last_hidden_state[:, 0]
+        x = self.dropout(pooled)
+        return self.regressor(x)
+
+train_df = pd.read_csv("model_training/data/train_vad.csv")
+test_df = pd.read_csv("model_training/data/test_vad.csv")
+train_texts = train_df['text'].tolist()
+labels_v = train_df['V'].tolist()
+labels_a = train_df['A'].tolist()
+labels_d = train_df['D'].tolist()
+test_texts = test_df['text'].tolist()
+test_labels_v = test_df['V'].tolist()
+test_labels_a = test_df['A'].tolist()
+test_labels_d = test_df['D'].tolist()
+
+tokenizer = RobertaTokenizer.from_pretrained(config.TOKENIZER_NAME)
+
+train_dataset = VADDataset(train_texts, labels_v, labels_a, labels_d, tokenizer, config.MAX_LEN)
+val_dataset = VADDataset(test_texts, test_labels_v, test_labels_a, test_labels_d, tokenizer, config.MAX_LEN)
+train_loader = DataLoader(train_dataset, batch_size=config.TRAIN_BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=config.VALID_BATCH_SIZE)
+
+model = RobertaForVAD(config.MODEL_NAME).to(config.DEVICE)
+optimizer = AdamW(model.parameters(), lr=config.LEARNING_RATE, eps=config.ADAM_EPSILON)
+total_steps = len(train_loader) * config.EPOCHS
+scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
+loss_fn = torch.nn.MSELoss()
+
+for epoch in range(config.EPOCHS):
+    model.train()
+    total_loss = 0
+    for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}"):
+        input_ids = batch['input_ids'].to(config.DEVICE)
+        attention_mask = batch['attention_mask'].to(config.DEVICE)
+        labels = torch.stack([batch['labels_v'], batch['labels_a'], batch['labels_d']], dim=1).to(config.DEVICE)
+
+        optimizer.zero_grad()
+        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+        loss = loss_fn(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        scheduler.step()
+        total_loss += loss.item()
+    print(f"Epoch {epoch+1} train loss: {total_loss/len(train_loader):.4f}")
+
+    model.eval()
+    val_loss = 0
+    with torch.no_grad():
+        for batch in val_loader:
+            input_ids = batch['input_ids'].to(config.DEVICE)
+            attention_mask = batch['attention_mask'].to(config.DEVICE)
+            labels = torch.stack([batch['labels_v'], batch['labels_a'], batch['labels_d']], dim=1).to(config.DEVICE)
+            outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+            loss = loss_fn(outputs, labels)
+            val_loss += loss.item()
+    print(f"Epoch {epoch+1} val loss: {val_loss/len(val_loader):.4f}")
+
+torch.save(model.state_dict(), "roberta_vad_regression.pt")

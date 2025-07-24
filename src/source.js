@@ -8,14 +8,48 @@ import { depth } from 'three/tsl';
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
-const journalProcessedData = {'2025-10-31': {'Woke but a bit mad still. LanguageA. Work. LanguageB. ': [0.08829526850207566, 0.09972470554687381, 0.11754263009953912], 'Met with PersonA to eat, she was feeling the effects of the night before because she was krunk, being out of pocket, and behind the dj. I tried to calm.': [0.044916417311880195, 0.001966609244635976, 0.02630111922254778], 'She also saw PersonB, which she texted before and definitely affected my tummy. It made me want to be there even more, but I knew that wasn’t best for me.': [-0.3798993299817233, 0.036704206154682534, -0.13718336373353662], 'Got over it. I was in a good mood on the way back. Last class, had a project with PersonC. Super chill.': [0.8211339001962333, 0.3588097758188453, 0.5212261225393997], 'Then I had my first date! Was feeling nervous because I was scared it would be meaningless and mid. I also didn’t know what he looked like really and I didn’t love my MessagingApp pic of him. Got ready for a while though, felt good. Hot.': [-0.2697908890812549, 0.4824318621767047, -0.16654190572059252], 'Met him at PlaceA which was cool and authentic. Felt awkward at first but the conversation flowed easily. One beer felt good, a buzz. Really enjoyed my time with him, getting to know him. It was good chats.': [0.8215248369585268, 0.39458354181045924, 0.4936143928497997], 'I think he was not that attractive to me sadly. Also didn’t have any edge which I think I need— didn’t provoke me to say anything out of pocket, new, or interesting. Just a nice, normal dude. Not for me. And I got too drunk and out of pocket by the end. Saying goodbye really cemented the lack of attraction to me.': [-0.7398126126549234, -0.22482511910685196, -0.4677471531756463], 'Went back to dorm, was going out with PersonD and PersonE but PersonD went to ClubA and PersonE wanted to go with the GroupA guys. I also wanted to go with the GroupA guys for the rush of seeing PersonB.': [0.18938030026563943, 0.10872913886152859, 0.08144417003620498], 'Napped. Tried getting PersonD and sister invited, went out. Completely forgot about PersonD in the rush of it all which I still feel bad about. All I can do is not do it again and feel this feeling of guilt.': [-0.7095839584796684, 0.07122072652790662, -0.33314891508036726], 'Anyways, met PersonE at PlaceB. PersonB in doorway. Ignore his fucking ass! Say hi to others.': [-0.5326555766973184, 0.49916477426947875, 0.056773191643685716], "PersonF says 'male model' to me and then said PersonG showed him SocialMediaA. I made a joke about them talking shit and he took it really personally.": [0.21071211102983792, 0.21932293281200801, 0.16874364026643676], 'PersonH was telling PersonE & I we were his fav girl friend group, he hates the other group. PersonE and I felt super uncomfortable and out of place. It was funny even in the moment though.': [0.5784129642895987, 0.5447331620123338, 0.4260637756605568], 'People left and we get in a car with PersonH. Lit vibes. In line with the GroupB guys, also good chats.': [0.7872140523619191, 0.12671467579762385, 0.44735090286238693], 'Also at PlaceB the tension between PersonB and I was suffocating I think for us both. In line I saw him flirting with a random bitch, take out cigs (degen) and he had a mustache… 3/3.': [-0.03258513506338692, 0.030999351282698664, -0.0012746751807714827], 'Got in, took shots and EnergyDrinkA. PersonB was lurky when we were around the table then PersonE and I propelled ourselves into our own choreographed dance world. It was so much motherfucking fun. Time flow. PersonB validation was pulsing. He was staring no joke. On way back from the bathroom, I said ‘awkward’ to him and he laughed and lit up a bit.': [0.8015422254863632, 0.5852628947218786, 0.5362365166720712], 'Went back around 4. Good night. EventA.': [0.7081792491294533, 0.1499371207890677, 0.47693372872937184], "Wrote this when going to bed: 'Emotional night so I want to edit. I am confused missing PersonB with us meant to be (which he probably makes every girl think). I feel bad for all the attention I didn’t give him (only said one word) but I’m seriously strong for that shit. I will wake up and be happy. Good night. PersonE funny.'": [-0.19574343715916834, 0.1677788332364189, -0.08807744206200305], 'Ha—my take now is that there is a tension/connection from what is wrapped up in our history between us. It will always be there. Means nothing about us now or our future. He made me miserable!': [-0.4380615357974904, -0.006724198180745462, -0.21614233149848697]}};
+//const journalProcessedData = {'2024-10-31': {'Woke but a bit mad still. LanguageA. Work. LanguageB. ': [0.08829526850207566, 0.09972470554687381, 0.11754263009953912], 'Met with PersonA to eat, she was feeling the effects of the night before because she was krunk, being out of pocket, and behind the dj. I tried to calm.': [0.044916417311880195, 0.001966609244635976, 0.02630111922254778], 'She also saw PersonB, which she texted before and definitely affected my tummy. It made me want to be there even more, but I knew that wasn’t best for me.': [-0.3798993299817233, 0.036704206154682534, -0.13718336373353662], 'Got over it. I was in a good mood on the way back. Last class, had a project with PersonC. Super chill.': [0.8211339001962333, 0.3588097758188453, 0.5212261225393997], 'Then I had my first date! Was feeling nervous because I was scared it would be meaningless and mid. I also didn’t know what he looked like really and I didn’t love my MessagingApp pic of him. Got ready for a while though, felt good. Hot.': [-0.2697908890812549, 0.4824318621767047, -0.16654190572059252], 'Met him at PlaceA which was cool and authentic. Felt awkward at first but the conversation flowed easily. One beer felt good, a buzz. Really enjoyed my time with him, getting to know him. It was good chats.': [0.8215248369585268, 0.39458354181045924, 0.4936143928497997], 'I think he was not that attractive to me sadly. Also didn’t have any edge which I think I need— didn’t provoke me to say anything out of pocket, new, or interesting. Just a nice, normal dude. Not for me. And I got too drunk and out of pocket by the end. Saying goodbye really cemented the lack of attraction to me.': [-0.7398126126549234, -0.22482511910685196, -0.4677471531756463], 'Went back to dorm, was going out with PersonD and PersonE but PersonD went to ClubA and PersonE wanted to go with the GroupA guys. I also wanted to go with the GroupA guys for the rush of seeing PersonB.': [0.18938030026563943, 0.10872913886152859, 0.08144417003620498], 'Napped. Tried getting PersonD and sister invited, went out. Completely forgot about PersonD in the rush of it all which I still feel bad about. All I can do is not do it again and feel this feeling of guilt.': [-0.7095839584796684, 0.07122072652790662, -0.33314891508036726], 'Anyways, met PersonE at PlaceB. PersonB in doorway. Ignore his fucking ass! Say hi to others.': [-0.5326555766973184, 0.49916477426947875, 0.056773191643685716], "PersonF says 'male model' to me and then said PersonG showed him SocialMediaA. I made a joke about them talking shit and he took it really personally.": [0.21071211102983792, 0.21932293281200801, 0.16874364026643676], 'PersonH was telling PersonE & I we were his fav girl friend group, he hates the other group. PersonE and I felt super uncomfortable and out of place. It was funny even in the moment though.': [0.5784129642895987, 0.5447331620123338, 0.4260637756605568], 'People left and we get in a car with PersonH. Lit vibes. In line with the GroupB guys, also good chats.': [0.7872140523619191, 0.12671467579762385, 0.44735090286238693], 'Also at PlaceB the tension between PersonB and I was suffocating I think for us both. In line I saw him flirting with a random bitch, take out cigs (degen) and he had a mustache… 3/3.': [-0.03258513506338692, 0.030999351282698664, -0.0012746751807714827], 'Got in, took shots and EnergyDrinkA. PersonB was lurky when we were around the table then PersonE and I propelled ourselves into our own choreographed dance world. It was so much motherfucking fun. Time flow. PersonB validation was pulsing. He was staring no joke. On way back from the bathroom, I said ‘awkward’ to him and he laughed and lit up a bit.': [0.8015422254863632, 0.5852628947218786, 0.5362365166720712], 'Went back around 4. Good night. EventA.': [0.7081792491294533, 0.1499371207890677, 0.47693372872937184], "Wrote this when going to bed: 'Emotional night so I want to edit. I am confused missing PersonB with us meant to be (which he probably makes every girl think). I feel bad for all the attention I didn’t give him (only said one word) but I’m seriously strong for that shit. I will wake up and be happy. Good night. PersonE funny.'": [-0.19574343715916834, 0.1677788332364189, -0.08807744206200305], 'Ha—my take now is that there is a tension/connection from what is wrapped up in our history between us. It will always be there. Means nothing about us now or our future. He made me miserable!': [-0.4380615357974904, -0.006724198180745462, -0.21614233149848697]}};
+const journalProcessedData = {
+    '2024-10-31': {
+        'Woke but a bit mad still. LanguageA. Work. LanguageB. ': [0.08829526850207566, 0.09972470554687381, 0.11754263009953912],
+        'Met with PersonA to eat, she was feeling the effects of the night before because she was krunk, being out of pocket, and behind the dj. I tried to calm.': [0.044916417311880195, 0.001966609244635976, 0.02630111922254778],
+        'She also saw PersonB, which she texted before and definitely affected my tummy. It made me want to be there even more, but I knew that wasn’t best for me.': [-0.3798993299817233, 0.036704206154682534, -0.13718336373353662],
+        'Got over it. I was in a good mood on the way back. Last class, had a project with PersonC. Super chill.': [0.8211339001962333, 0.3588097758188453, 0.5212261225393997],
+        'Then I had my first date! Was feeling nervous because I was scared it would be meaningless and mid. I also didn’t know what he looked like really and I didn’t love my MessagingApp pic of him. Got ready for a while though, felt good. Hot.': [-0.2697908890812549, 0.4824318621767047, -0.16654190572059252],
+        'Met him at PlaceA which was cool and authentic. Felt awkward at first but the conversation flowed easily. One beer felt good, a buzz. Really enjoyed my time with him, getting to know him. It was good chats.': [0.8215248369585268, 0.39458354181045924, 0.4936143928497997],
+        'I think he was not that attractive to me sadly. Also didn’t have any edge which I think I need— didn’t provoke me to say anything out of pocket, new, or interesting. Just a nice, normal dude. Not for me. And I got too drunk and out of pocket by the end. Saying goodbye really cemented the lack of attraction to me.': [-0.7398126126549234, -0.22482511910685196, -0.4677471531756463],
+        'Went back to dorm, was going out with PersonD and PersonE but PersonD went to ClubA and PersonE wanted to go with the GroupA guys. I also wanted to go with the GroupA guys for the rush of seeing PersonB.': [0.18938030026563943, 0.10872913886152859, 0.08144417003620498],
+        'Napped. Tried getting PersonD and sister invited, went out. Completely forgot about PersonD in the rush of it all which I still feel bad about. All I can do is not do it again and feel this feeling of guilt.': [-0.7095839584796684, 0.07122072652790662, -0.33314891508036726],
+        'Anyways, met PersonE at PlaceB. PersonB in doorway. Ignore his fucking ass! Say hi to others.': [-0.5326555766973184, 0.49916477426947875, 0.056773191643685716],
+        "PersonF says 'male model' to me and then said PersonG showed him SocialMediaA. I made a joke about them talking shit and he took it really personally.": [0.21071211102983792, 0.21932293281200801, 0.16874364026643676],
+        'PersonH was telling PersonE & I we were his fav girl friend group, he hates the other group. PersonE and I felt super uncomfortable and out of place. It was funny even in the moment though.': [0.5784129642895987, 0.5447331620123338, 0.4260637756605568],
+        'People left and we get in a car with PersonH. Lit vibes. In line with the GroupB guys, also good chats.': [0.7872140523619191, 0.12671467579762385, 0.44735090286238693],
+        'Also at PlaceB the tension between PersonB and I was suffocating I think for us both. In line I saw him flirting with a random bitch, take out cigs (degen) and he had a mustache… 3/3.': [-0.03258513506338692, 0.030999351282698664, -0.0012746751807714827],
+        'Got in, took shots and EnergyDrinkA. PersonB was lurky when we were around the table then PersonE and I propelled ourselves into our own choreographed dance world. It was so much motherfucking fun. Time flow. PersonB validation was pulsing. He was staring no joke. On way back from the bathroom, I said ‘awkward’ to him and he laughed and lit up a bit.': [0.8015422254863632, 0.5852628947218786, 0.5362365166720712],
+        'Went back around 4. Good night. EventA.': [0.7081792491294533, 0.1499371207890677, 0.47693372872937184],
+        "Wrote this when going to bed: 'Emotional night so I want to edit. I am confused missing PersonB with us meant to be (which he probably makes every girl think). I feel bad for all the attention I didn’t give him (only said one word) but I’m seriously strong for that shit. I will wake up and be happy. Good night. PersonE funny.'": [-0.19574343715916834, 0.1677788332364189, -0.08807744206200305],
+        'Ha—my take now is that there is a tension/connection from what is wrapped up in our history between us. It will always be there. Means nothing about us now or our future. He made me miserable!': [-0.4380615357974904, -0.006724198180745462, -0.21614233149848697]
+    },
+    '2025-07-06': {
+        'Woke up feeling surprisingly well-rested despite the late night. Made coffee and journaled for a bit before anyone else was up.': [0.413, 0.201, 0.378],
+        'Had brunch with PersonI—good convo and sunny weather. We talked about plans for the rest of the summer. I felt calm and grateful.': [0.711, 0.452, 0.589],
+        'Spent the afternoon working on ProjectX. Got into a deep flow state and actually made real progress. Felt proud.': [0.839, 0.377, 0.642],
+        'Evening got a little tricky. PersonJ texted and it threw me off. We haven’t spoken in weeks. Confused why I still care.': [-0.243, 0.128, -0.115],
+        'Walked around the park listening to music. Tried to get out of my head. Felt a bit better by sunset.': [0.309, 0.264, 0.208]
+    }
+}
 
+const journalUnprocessed = {
+  '2024-10-31': "Woke but a bit mad still. LanguageA. Work. LanguageB. Met with PersonA to eat, she was feeling the effects of the night before because she was krunk, being out of pocket, and behind the dj. I tried to calm. She also saw PersonB, which she texted before and definitely affected my tummy. It made me want to be there even more, but I knew that wasn’t best for me. Got over it. I was in a good mood on the way back. Last class, had a project with PersonC. Super chill. Then I had my first date! Was feeling nervous because I was scared it would be meaningless and mid. I also didn’t know what he looked like really and I didn’t love my MessagingApp pic of him. Got ready for a while though, felt good. Hot. Met him at PlaceA which was cool and authentic. Felt awkward at first but the conversation flowed easily. One beer felt good, a buzz. Really enjoyed my time with him, getting to know him. It was good chats. I think he was not that attractive to me sadly. Also didn’t have any edge which I think I need— didn’t provoke me to say anything out of pocket, new, or interesting. Just a nice, normal dude. Not for me. And I got too drunk and out of pocket by the end. Saying goodbye really cemented the lack of attraction to me. Went back to dorm, was going out with PersonD and PersonE but PersonD went to ClubA and PersonE wanted to go with the GroupA guys. I also wanted to go with the GroupA guys for the rush of seeing PersonB. Napped. Tried getting PersonD and sister invited, went out. Completely forgot about PersonD in the rush of it all which I still feel bad about. All I can do is not do it again and feel this feeling of guilt. Anyways, met PersonE at PlaceB. PersonB in doorway. Ignore his fucking ass! Say hi to others. PersonF says 'male model' to me and then said PersonG showed him SocialMediaA. I made a joke about them talking shit and he took it really personally. PersonH was telling PersonE & I we were his fav girl friend group, he hates the other group. PersonE and I felt super uncomfortable and out of place. It was funny even in the moment though. People left and we get in a car with PersonH. Lit vibes. In line with the GroupB guys, also good chats. Also at PlaceB the tension between PersonB and I was suffocating I think for us both. In line I saw him flirting with a random bitch, take out cigs (degen) and he had a mustache… 3/3. Got in, took shots and EnergyDrinkA. PersonB was lurky when we were around the table then PersonE and I propelled ourselves into our own choreographed dance world. It was so much motherfucking fun. Time flow. PersonB validation was pulsing. He was staring no joke. On way back from the bathroom, I said ‘awkward’ to him and he laughed and lit up a bit. Went back around 4. Good night. EventA. Wrote this when going to bed: 'Emotional night so I want to edit. I am confused missing PersonB with us meant to be (which he probably makes every girl think). I feel bad for all the attention I didn’t give him (only said one word) but I’m seriously strong for that shit. I will wake up and be happy. Good night. PersonE funny.' Ha—my take now is that there is a tension/connection from what is wrapped up in our history between us. It will always be there. Means nothing about us now or our future. He made me miserable!"
+}
+
+// need to save journak unprocessed and processed
 // --- Create EXR Environment Background ---
 // IMPORTANT: Replace 'your_skybox_file.exr' with the actual filename of your .exr file.
 // Ensure this path is correct relative to your HTML file.
 new EXRLoader()
     .setPath('src/img/') // Path to the directory containing your .exr file
-    .load('background.exr', function (texture) {
+    .load('pink-background.exr', function (texture) {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         scene.background = texture;
         scene.environment = texture; // Crucial for PBR materials to reflect the environment
@@ -155,7 +189,11 @@ function displayJournalDataPoints(data) {
                     const t = (normalizedValence - 0.5) / 0.5; // 0-1 range for this segment
                     sphereColor.setRGB(t, 1 - t, 0); // R=t, G=1-t, B=0
                 }
-                const pointMaterial = new THREE.MeshBasicMaterial({ color: sphereColor });
+                const pointMaterial = new THREE.MeshStandardMaterial({
+                    color: sphereColor,
+                    metalness: 0.8, // Make it metallic, like the text
+                    roughness: 0.2  // Make it shiny, like the text
+                });
                 const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
                 const currentPointPosition = new THREE.Vector3(
                     vad[0] * 0.5, // Valence to X
@@ -247,6 +285,30 @@ pointLight.color.setHSL( Math.random(), 1, 0.5 );
 pointLight.position.set( 0, 100, 90 );
 scene.add( pointLight );
 
+// --- Create Face Icon ---
+const textureLoader = new THREE.TextureLoader();
+let iconMesh; // Declare here to access it in the animate loop
+textureLoader.load(
+    'src/img/whiteIcon.png', // Path to your icon
+    function ( texture ) { // onLoad callback
+        // To make the icon shiny, we use a Mesh with PlaneGeometry.
+        // This allows us to use MeshStandardMaterial which supports shininess.
+        const iconGeometry = new THREE.PlaneGeometry(0.2, 0.2); // Set the size of the icon here
+        const iconMaterial = new THREE.MeshStandardMaterial({
+            map: texture,
+            metalness: 0.8,     // Makes it look metallic and shiny
+            roughness: 0.2,     // Controls how reflective it is (lower is shinier)
+            transparent: true,  // Essential for using PNGs with alpha transparency
+            side: THREE.DoubleSide // Ensures the icon is visible from the back too
+        });
+
+        iconMesh = new THREE.Mesh(iconGeometry, iconMaterial);
+        iconMesh.position.set(h, h, -h); // Position at the top-front-right corner
+        // Add the icon mesh to the cubeFrame group so it moves and rotates with the cube.
+        cubeFrame.add(iconMesh);
+    }
+);
+
 // Mouse Down: Start dragging
 window.addEventListener('mousedown', (event) => {
     // Check if it's the left mouse button (button code 0)
@@ -297,16 +359,19 @@ window.addEventListener('mousemove', (event) => {
 
     // Hover detection for data points
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(dataPointsGroup.children);
+    const intersects = raycaster.intersectObjects(dataPointsGroup.children, false);
 
-    if (intersects.length > 0 && intersects[0].object.userData.isDataPoint) {
-        const intersectedObject = intersects[0].object;
+    // Find the first intersected object that is a data point (a sphere), ignoring the lines.
+    const intersectedPoint = intersects.find(intersect => intersect.object.userData.isDataPoint);
+
+    if (intersectedPoint) {
+        const intersectedObject = intersectedPoint.object;
         tooltip.innerHTML = intersectedObject.userData.text;
         tooltip.style.visibility = 'visible';
 
         // Convert 3D position to 2D screen position for tooltip
         const vector = new THREE.Vector3();
-        intersectedObject.getWorldPosition(vector); // Get world position of the data point
+        intersectedObject.getWorldPosition(vector); // Get world position of the data point sphere
         vector.project(camera); // Project to normalized device coordinates
 
         const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
@@ -314,7 +379,6 @@ window.addEventListener('mousemove', (event) => {
 
         tooltip.style.left = `${x + 10}px`; // Offset slightly from cursor
         tooltip.style.top = `${y + 10}px`;
-
     } else {
         tooltip.style.visibility = 'hidden';
     }
@@ -379,10 +443,111 @@ window.addEventListener('resize', () => {
 function animate() {
     // The cube's rotation is now updated directly in the mousemove event
     // when dragging, so no specific rotation update is needed here for that.
-  renderer.render( scene, camera );
+
+    // Make the icon always face the camera (billboarding)
+    if (iconMesh) {
+        // The lookAt method orients the object to face a point in world space.
+        iconMesh.lookAt(camera.position);
+    }
+
+    renderer.render( scene, camera );
 }
+
+// --- Journal Entry Display UI ---
+// document.addEventListener('DOMContentLoaded', () => {
+//   setupJournalInterface(journalUnprocessed);
+// });
+
+function setupJournalInterface(journalData) {
+  const viewModal = document.getElementById('view-journal-modal');
+  const entryModal = document.getElementById('journal-entry-modal');
+
+  const openBtn = document.getElementById('view-journal-button'); 
+  const closeViewBtn = viewModal.querySelector('.close-button');
+  const closeEntryBtn = document.getElementById('entry-close-button');
+
+  const listContainer = document.getElementById('journal-list-container');
+  const modalDate = document.getElementById('modal-date');
+  const modalText = document.getElementById('modal-text');
+
+  // Clear list container if setup is run again
+  listContainer.innerHTML = '';
+
+  // Create date buttons that trigger second modal
+  for (const date in journalData) {
+    const dateButton = document.createElement('button');
+    dateButton.classList.add('journal-button');
+    dateButton.textContent = date;
+
+    dateButton.addEventListener('click', () => {
+      modalDate.textContent = date;
+      modalText.textContent = journalData[date];
+      entryModal.style.display = 'flex'; // Show second modal
+    });
+
+    listContainer.appendChild(dateButton);
+  }
+
+  // Show journal date picker modal
+  openBtn.addEventListener('click', () => {
+    viewModal.style.display = 'flex';
+  });
+
+  // Close date picker modal
+  closeViewBtn.addEventListener('click', () => {
+    viewModal.style.display = 'none';
+  });
+
+  // Close journal entry modal
+  closeEntryBtn.addEventListener('click', () => {
+    entryModal.style.display = 'none';
+    modalDate.textContent = '';
+    modalText.textContent = '';
+  });
+
+  // Click-outside-to-close for both modals
+  window.addEventListener('click', (event) => {
+    if (event.target === viewModal) {
+      viewModal.style.display = 'none';
+    } else if (event.target === entryModal) {
+      entryModal.style.display = 'none';
+      modalDate.textContent = '';
+      modalText.textContent = '';
+    }
+  });
+}
+// Call the function to build the UI from the unprocessed journal data
+setupJournalInterface(journalUnprocessed);
 
 // Initial display of data points
 displayJournalDataPoints(journalProcessedData);
 
 renderer.setAnimationLoop( animate );
+
+// Add this code to your /Users/mayamarkus-malone/Documents/VADMAP/src/source.js file
+
+// This code handles the logic for the new pop-up modal.
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('entry-modal');
+  const openBtn = document.getElementById('add-entry-button'); // ✅ correct ID
+  const closeBtn = document.querySelector('#entry-modal .close-button');
+  const submitBtn = document.getElementById('submit-button');
+
+  openBtn.addEventListener('click', () => {
+    modal.style.display = 'flex'; // ✅ open modal on click
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+  submitBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+});
