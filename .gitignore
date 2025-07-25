@@ -173,4 +173,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+
 journals/
+model_training/roberta_vad_regression.pt
